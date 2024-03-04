@@ -72,6 +72,7 @@ class BlogPost(db.Model):
     author: Mapped["User"] = relationship(back_populates="posts")
     comments: Mapped["Comment"] = relationship(back_populates="parent_post")
 
+
 class User(UserMixin, db.Model):
     __tablename__ = "users"
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
@@ -192,6 +193,7 @@ def add_new_post():
         )
         db.session.add(new_post)
         db.session.commit()
+
         return redirect(url_for("get_all_posts"))
     return render_template("make-post.html", form=form)
 
@@ -200,6 +202,7 @@ def add_new_post():
 @admin_only
 def edit_post(post_id):
     post = db.get_or_404(BlogPost, post_id)
+
     edit_form = CreatePostForm(
         title=post.title,
         subtitle=post.subtitle,
@@ -214,6 +217,7 @@ def edit_post(post_id):
         post.author = current_user
         post.body = edit_form.body.data
         db.session.commit()
+
         return redirect(url_for("show_post", post_id=post.id))
     return render_template("make-post.html", form=edit_form, is_edit=True)
 
@@ -224,6 +228,7 @@ def delete_post(post_id):
     post_to_delete = db.get_or_404(BlogPost, post_id)
     db.session.delete(post_to_delete)
     db.session.commit()
+
     return redirect(url_for('get_all_posts'))
 
 
